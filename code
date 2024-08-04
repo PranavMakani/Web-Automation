@@ -1,0 +1,45 @@
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+from time import sleep
+
+# Set up Chrome options
+chrome_options = Options()
+chrome_options.add_argument("--start-maximized")
+
+# Path to your ChromeDriver executable
+chrome_service = Service('path/to/chromedriver')  # Update with your path
+
+# Initialize the Chrome driver
+driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
+
+try:
+    # Open the Google sign-in page
+    driver.get("https://accounts.google.com/")
+
+    # Wait and interact with the email field
+    email = driver.find_element(By.ID, "identifierId")
+    email.send_keys("youremail@gmail.com")
+    driver.find_element(By.ID, "identifierNext").click()
+
+    # Wait and interact with the password field
+    sleep(2)  # Basic sleep to wait for the password field to appear
+    password = driver.find_element(By.NAME, "password")
+    password.send_keys("yourpassword")
+    driver.find_element(By.ID, "passwordNext").click()
+
+    # Wait until logged in and YouTube home page is loaded
+    sleep(5)  # Basic sleep to wait for the page to load
+
+    # Navigate to YouTube Shorts
+    driver.get("https://www.youtube.com/shorts")
+
+    # Scroll through the YouTube Shorts feed
+    for _ in range(10):  # Adjust the range for more or fewer scrolls
+        driver.execute_script("window.scrollBy(0, 1000);")
+        sleep(2)  # Adjust the sleep time as needed
+
+finally:
+    # Close the driver
+    driver.quit()
